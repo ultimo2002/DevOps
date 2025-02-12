@@ -29,6 +29,23 @@ jobs:
     - name: Create .env file
       run: |
         echo "${{ secrets.DOTENV }}" > code/.env
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.7
+
+    - name: Configure Terraform with DigitalOcean API token
+      run: |
+        echo "TF_VAR_digitalocean_api_token=${{ secrets.DIGITALOCEAN_API_TOKEN }}" >> $GITHUB_ENV
+
+    - name: Initialize Terraform
+      run: terraform init
+
+    - name: Apply Terraform configuration
+      run: terraform apply -auto-approve
+
+        
+
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
